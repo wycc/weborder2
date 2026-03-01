@@ -90,6 +90,14 @@
 - **FR-004**: System MUST [data requirement, e.g., "persist user preferences"]
 - **FR-005**: System MUST [behavior, e.g., "log all security events"]
 
+### Non-Functional Requirements *(mandatory)*
+
+- **NFR-QUALITY-001**: Code changes MUST pass linting, formatting, and type checks defined by the project.
+- **NFR-TEST-001**: Each functional requirement MUST map to explicit test coverage (unit/integration/contract as applicable).
+- **NFR-UX-001**: User-facing flows MUST define consistent terminology, interaction patterns, and error/feedback behavior.
+- **NFR-PERF-001**: Feature MUST define measurable performance targets (e.g., p95 latency, throughput, resource usage).
+- **NFR-PERF-002**: Acceptance MUST include a validation method for performance targets.
+
 *Example of marking unclear requirements:*
 
 - **FR-006**: System MUST authenticate users via [NEEDS CLARIFICATION: auth method not specified - email/password, SSO, OAuth?]
@@ -113,3 +121,5 @@
 - **SC-002**: [Measurable metric, e.g., "System handles 1000 concurrent users without degradation"]
 - **SC-003**: [User satisfaction metric, e.g., "90% of users successfully complete primary task on first attempt"]
 - **SC-004**: [Business metric, e.g., "Reduce support tickets related to [X] by 50%"]
+- **SC-005**: [Quality metric, e.g., "0 critical lint/type errors in CI for this feature"]
+- **SC-006**: [Performance metric, e.g., "p95 response time under 200ms at defined load"]
