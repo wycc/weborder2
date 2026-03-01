@@ -17,11 +17,11 @@
 
 **Purpose**: Project initialization and baseline tooling for TypeScript + Fastify + Playwright
 
-- [ ] T001 建立後端與前端目錄骨架於 backend/src/, backend/tests/, frontend/src/, tests/e2e/
-- [ ] T002 初始化 Node.js TypeScript 專案設定於 package.json 與 tsconfig.json
-- [ ] T003 [P] 設定 ESLint/Prettier 規則於 .eslintrc.cjs 與 .prettierrc
-- [ ] T004 [P] 設定 Vitest 與 Playwright 基礎設定於 vitest.config.ts 與 playwright.config.ts
-- [ ] T005 [P] 建立環境變數範本與載入機制於 .env.example 與 backend/src/config/env.ts
+- [X] T001 建立後端與前端目錄骨架於 backend/src/, backend/tests/, frontend/src/, tests/e2e/
+- [X] T002 初始化 Node.js TypeScript 專案設定於 package.json 與 tsconfig.json
+- [X] T003 [P] 設定 ESLint/Prettier 規則於 .eslintrc.cjs 與 .prettierrc
+- [X] T004 [P] 設定 Vitest 與 Playwright 基礎設定於 vitest.config.ts 與 playwright.config.ts
+- [X] T005 [P] 建立環境變數範本與載入機制於 .env.example 與 backend/src/config/env.ts
 
 ---
 
@@ -31,12 +31,12 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T006 建立 Fastify 啟動與路由掛載入口於 backend/src/app.ts 與 backend/src/server.ts
-- [ ] T007 [P] 建立資料庫連線與 repository 基礎介面於 backend/src/lib/db.ts 與 backend/src/repositories/base-repository.ts
-- [ ] T008 [P] 建立共用錯誤格式與 HTTP error handler 於 backend/src/lib/errors.ts 與 backend/src/plugins/error-handler.ts
-- [ ] T009 [P] 建立 JWT 驗簽與 auth middleware 基礎於 backend/src/lib/jwt.ts 與 backend/src/middleware/auth.ts
-- [ ] T010 [P] 建立結構化稽核日誌元件（含敏感欄位遮罩）於 backend/src/lib/audit-logger.ts
-- [ ] T011 建立使用者、驗證 token、稽核事件基礎 schema/model 於 backend/src/models/user-account.ts、backend/src/models/email-verification-token.ts、backend/src/models/registration-audit-event.ts
+- [X] T006 建立 Fastify 啟動與路由掛載入口於 backend/src/app.ts 與 backend/src/server.ts
+- [X] T007 [P] 建立資料庫連線與 repository 基礎介面於 backend/src/lib/db.ts 與 backend/src/repositories/base-repository.ts
+- [X] T008 [P] 建立共用錯誤格式與 HTTP error handler 於 backend/src/lib/errors.ts 與 backend/src/plugins/error-handler.ts
+- [X] T009 [P] 建立 JWT 驗簽與 auth middleware 基礎於 backend/src/lib/jwt.ts 與 backend/src/middleware/auth.ts
+- [X] T010 [P] 建立結構化稽核日誌元件（含敏感欄位遮罩）於 backend/src/lib/audit-logger.ts
+- [X] T011 建立使用者、驗證 token、稽核事件基礎 schema/model 於 backend/src/models/user-account.ts、backend/src/models/email-verification-token.ts、backend/src/models/registration-audit-event.ts
 
 **Checkpoint**: Foundation ready - user story implementation can now begin in parallel
 
@@ -50,22 +50,22 @@
 
 ### Tests for User Story 1 (MANDATORY) ✅
 
-- [ ] T012 [P] [US1] 建立 `/auth/register` 契約測試於 backend/tests/contract/auth-register.contract.test.ts
-- [ ] T013 [P] [US1] 建立 `/auth/verify-email` 契約測試於 backend/tests/contract/auth-verify-email.contract.test.ts
-- [ ] T014 [P] [US1] 建立註冊與驗證整合測試於 backend/tests/integration/auth-registration-flow.integration.test.ts
-- [ ] T015 [P] [US1] 建立「註冊→收信→驗證」E2E 測試於 tests/e2e/register-and-verify.e2e.spec.ts
+- [X] T012 [P] [US1] 建立 `/auth/register` 契約測試於 backend/tests/contract/auth-register.contract.test.ts
+- [X] T013 [P] [US1] 建立 `/auth/verify-email` 契約測試於 backend/tests/contract/auth-verify-email.contract.test.ts
+- [X] T014 [P] [US1] 建立註冊與驗證整合測試於 backend/tests/integration/auth-registration-flow.integration.test.ts
+- [X] T015 [P] [US1] 建立「註冊→收信→驗證」E2E 測試於 tests/e2e/register-and-verify.e2e.spec.ts
 
 ### Implementation for User Story 1
 
-- [ ] T016 [P] [US1] 實作註冊請求 zod schema 與 DTO 於 backend/src/api/schemas/register.schema.ts
-- [ ] T017 [P] [US1] 實作驗證 token 查驗 schema 於 backend/src/api/schemas/verify-email.schema.ts
-- [ ] T018 [US1] 實作密碼 Argon2 雜湊服務於 backend/src/services/password-hash.service.ts
-- [ ] T019 [US1] 實作驗證 token 產生/標記已使用服務於 backend/src/services/email-verification-token.service.ts
-- [ ] T020 [US1] 實作郵件寄送（含測試 stub）於 backend/src/services/email.service.ts
-- [ ] T021 [US1] 實作註冊流程服務（建立 UNVERIFIED 帳號+寄送驗證信）於 backend/src/services/registration.service.ts
-- [ ] T022 [US1] 實作驗證流程服務（有效性檢查+更新 VERIFIED）於 backend/src/services/verify-email.service.ts
-- [ ] T023 [US1] 實作 `POST /auth/register` 與 `GET /auth/verify-email` 路由於 backend/src/api/routes/auth.routes.ts
-- [ ] T024 [US1] 實作驗證結果頁（成功/失敗）於 frontend/src/pages/verify-email-result.tsx
+- [X] T016 [P] [US1] 實作註冊請求 zod schema 與 DTO 於 backend/src/api/schemas/register.schema.ts
+- [X] T017 [P] [US1] 實作驗證 token 查驗 schema 於 backend/src/api/schemas/verify-email.schema.ts
+- [X] T018 [US1] 實作密碼 Argon2 雜湊服務於 backend/src/services/password-hash.service.ts
+- [X] T019 [US1] 實作驗證 token 產生/標記已使用服務於 backend/src/services/email-verification-token.service.ts
+- [X] T020 [US1] 實作郵件寄送（含測試 stub）於 backend/src/services/email.service.ts
+- [X] T021 [US1] 實作註冊流程服務（建立 UNVERIFIED 帳號+寄送驗證信）於 backend/src/services/registration.service.ts
+- [X] T022 [US1] 實作驗證流程服務（有效性檢查+更新 VERIFIED）於 backend/src/services/verify-email.service.ts
+- [X] T023 [US1] 實作 `POST /auth/register` 與 `GET /auth/verify-email` 路由於 backend/src/api/routes/auth.routes.ts
+- [X] T024 [US1] 實作驗證結果頁（成功/失敗）於 frontend/src/pages/verify-email-result.tsx
 
 **Checkpoint**: User Story 1 fully functional and independently testable
 
@@ -79,15 +79,15 @@
 
 ### Tests for User Story 2 (MANDATORY) ✅
 
-- [ ] T025 [P] [US2] 建立 `/protected/resource` 契約測試於 backend/tests/contract/protected-resource.contract.test.ts
-- [ ] T026 [P] [US2] 建立驗證狀態授權整合測試於 backend/tests/integration/verified-access.integration.test.ts
-- [ ] T027 [P] [US2] 建立未驗證阻擋與提示文案 E2E 測試於 tests/e2e/unverified-access-blocked.e2e.spec.ts
+- [X] T025 [P] [US2] 建立 `/protected/resource` 契約測試於 backend/tests/contract/protected-resource.contract.test.ts
+- [X] T026 [P] [US2] 建立驗證狀態授權整合測試於 backend/tests/integration/verified-access.integration.test.ts
+- [X] T027 [P] [US2] 建立未驗證阻擋與提示文案 E2E 測試於 tests/e2e/unverified-access-blocked.e2e.spec.ts
 
 ### Implementation for User Story 2
 
-- [ ] T028 [US2] 擴充 auth middleware 驗證 account status 並輸出一致錯誤碼於 backend/src/middleware/auth.ts
-- [ ] T029 [US2] 實作受保護資源路由於 backend/src/api/routes/protected.routes.ts
-- [ ] T030 [US2] 實作前端未驗證導引元件（含重發入口）於 frontend/src/components/unverified-notice.tsx
+- [X] T028 [US2] 擴充 auth middleware 驗證 account status 並輸出一致錯誤碼於 backend/src/middleware/auth.ts
+- [X] T029 [US2] 實作受保護資源路由於 backend/src/api/routes/protected.routes.ts
+- [X] T030 [US2] 實作前端未驗證導引元件（含重發入口）於 frontend/src/components/unverified-notice.tsx
 
 **Checkpoint**: User Stories 1 and 2 both work independently
 
@@ -101,15 +101,15 @@
 
 ### Tests for User Story 3 (MANDATORY) ✅
 
-- [ ] T031 [P] [US3] 建立密碼雜湊單元測試於 backend/tests/unit/password-hash.service.unit.test.ts
-- [ ] T032 [P] [US3] 建立重複註冊整合測試於 backend/tests/integration/duplicate-registration.integration.test.ts
-- [ ] T033 [P] [US3] 建立重複註冊錯誤回應契約測試於 backend/tests/contract/auth-register-duplicate.contract.test.ts
+- [X] T031 [P] [US3] 建立密碼雜湊單元測試於 backend/tests/unit/password-hash.service.unit.test.ts
+- [X] T032 [P] [US3] 建立重複註冊整合測試於 backend/tests/integration/duplicate-registration.integration.test.ts
+- [X] T033 [P] [US3] 建立重複註冊錯誤回應契約測試於 backend/tests/contract/auth-register-duplicate.contract.test.ts
 
 ### Implementation for User Story 3
 
-- [ ] T034 [US3] 在註冊服務加入 email 唯一檢查與一致錯誤回應於 backend/src/services/registration.service.ts
-- [ ] T035 [US3] 在 repository 層加入大小寫不敏感 email 查找與唯一保護於 backend/src/repositories/user-account.repository.ts
-- [ ] T036 [US3] 強化註冊路由錯誤映射（400/409）於 backend/src/api/routes/auth.routes.ts
+- [X] T034 [US3] 在註冊服務加入 email 唯一檢查與一致錯誤回應於 backend/src/services/registration.service.ts
+- [X] T035 [US3] 在 repository 層加入大小寫不敏感 email 查找與唯一保護於 backend/src/repositories/user-account.repository.ts
+- [X] T036 [US3] 強化註冊路由錯誤映射（400/409）於 backend/src/api/routes/auth.routes.ts
 
 **Checkpoint**: All user stories independently functional
 
@@ -119,12 +119,12 @@
 
 **Purpose**: Improvements that affect multiple user stories
 
-- [ ] T037 [P] 補齊 API 文件與範例回應於 specs/001-user-registration-service/contracts/openapi.yaml
-- [ ] T038 整理稽核事件覆蓋（註冊/驗證成功/失敗/重發）於 backend/src/services/audit-event.service.ts
-- [ ] T039 [P] 補齊重發驗證信 API 與流程（FR-008）測試於 backend/tests/integration/resend-verification.integration.test.ts
-- [ ] T040 實作重發驗證信路由與服務於 backend/src/api/routes/auth.routes.ts 與 backend/src/services/resend-verification.service.ts
-- [ ] T041 [P] 新增效能驗證測試（register/verify p95 < 2s）於 backend/tests/integration/performance-registration.integration.test.ts
-- [ ] T042 執行 quickstart 驗證指令並紀錄結果於 specs/001-user-registration-service/quickstart.md
+- [X] T037 [P] 補齊 API 文件與範例回應於 specs/001-user-registration-service/contracts/openapi.yaml
+- [X] T038 整理稽核事件覆蓋（註冊/驗證成功/失敗/重發）於 backend/src/services/audit-event.service.ts
+- [X] T039 [P] 補齊重發驗證信 API 與流程（FR-008）測試於 backend/tests/integration/resend-verification.integration.test.ts
+- [X] T040 實作重發驗證信路由與服務於 backend/src/api/routes/auth.routes.ts 與 backend/src/services/resend-verification.service.ts
+- [X] T041 [P] 新增效能驗證測試（register/verify p95 < 2s）於 backend/tests/integration/performance-registration.integration.test.ts
+- [X] T042 執行 quickstart 驗證指令並紀錄結果於 specs/001-user-registration-service/quickstart.md
 
 ---
 
