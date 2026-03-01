@@ -18,5 +18,22 @@ describe('POST /auth/register contract', () => {
     expect(body.userId).toBeTypeOf('string');
     expect(body.message).toBeTypeOf('string');
   });
-});
 
+  it('returns 409 EMAIL_EXISTS for duplicate email', async () => {
+    const app = buildApp();
+    await app.inject({
+      method: 'POST',
+      url: '/auth/register',
+      payload: { email: 'dup@example.com', password: 'Password123' },
+    });
+
+    const res = await app.inject({
+      method: 'POST',
+      url: '/auth/register',
+      payload: { email: 'dup@example.com', password: 'Password123' },
+    });
+
+    expect(res.statusCode).toBe(409);
+    expect(res.json().code).toBe('EMAIL_EXISTS');
+  });
+});

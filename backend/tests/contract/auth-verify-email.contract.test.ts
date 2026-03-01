@@ -21,5 +21,15 @@ describe('GET /auth/verify-email contract', () => {
     expect(res.statusCode).toBe(200);
     expect(res.json()).toMatchObject({ status: 'VERIFIED' });
   });
-});
 
+  it('POST /auth/verify-code returns 400 for invalid code', async () => {
+    const app = buildApp();
+    const res = await app.inject({
+      method: 'POST',
+      url: '/auth/verify-code',
+      payload: { email: 'x@example.com', code: 'invalid-token' },
+    });
+    expect(res.statusCode).toBe(400);
+    expect(['TOKEN_INVALID', 'TOKEN_EXPIRED', 'TOKEN_USED']).toContain(res.json().code);
+  });
+});

@@ -1,6 +1,7 @@
 import type { FastifyRequest } from 'fastify';
 import { AppError } from '../lib/errors.js';
 import { verifyJwt } from '../lib/jwt.js';
+import { db } from '../lib/db.js';
 
 export const authMiddleware = async (req: FastifyRequest): Promise<void> => {
   const header = req.headers.authorization;
@@ -14,9 +15,11 @@ export const authMiddleware = async (req: FastifyRequest): Promise<void> => {
   } catch {
     throw new AppError(401, 'AUTH_INVALID', 'Missing or invalid auth');
   }
+  if (payload.jti && db.revokedJti.has(payload.jti)) {
+    throw new AppError(401, 'AUTH_INVALID', 'Missing or invalid auth');
+  }
   if (payload.status !== 'VERIFIED') {
     throw new AppError(403, 'EMAIL_UNVERIFIED', 'Email verification required', 'RESEND_VERIFICATION');
   }
   (req as FastifyRequest & { user?: typeof payload }).user = payload;
 };
-

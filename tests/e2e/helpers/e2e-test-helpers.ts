@@ -30,3 +30,16 @@ export const extractTokenFromVerifyLink = (url: string): string => {
   if (!token) throw new Error('Missing token in verification URL');
   return token;
 };
+
+export const measureStepMs = async (fn: () => Promise<unknown>): Promise<number> => {
+  const start = Date.now();
+  await fn();
+  return Date.now() - start;
+};
+
+export const assertP95Under3s = (samples: number[]): boolean => {
+  if (samples.length === 0) return false;
+  const sorted = [...samples].sort((a, b) => a - b);
+  const idx = Math.min(sorted.length - 1, Math.floor(sorted.length * 0.95));
+  return sorted[idx] < 3000;
+};

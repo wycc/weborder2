@@ -13,4 +13,12 @@ test('unverified user blocked from protected flow', async ({ request, baseURL })
 
   const protectedRes = await request.get('/protected/resource');
   expect([401, 403]).toContain(protectedRes.status());
+
+  const loginFail = await request.post('/auth/login', {
+    data: { email, password: 'WrongPassword123' },
+  });
+  expect([401, 403]).toContain(loginFail.status());
+
+  const logoutRes = await request.post('/auth/logout');
+  expect(logoutRes.status()).toBe(200);
 });
