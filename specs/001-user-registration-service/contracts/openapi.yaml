@@ -1,0 +1,178 @@
+openapi: 3.0.3
+info:
+  title: User Registration Service API
+  version: 0.1.0
+  description: Contract for registration, email verification, and guarded access.
+servers:
+  - url: http://localhost:3000
+paths:
+  /auth/register:
+    post:
+      summary: Register a new account
+      operationId: register
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+      responses:
+        '201':
+          description: Account created in UNVERIFIED state, verification email sent.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegisterResponse'
+        '400':
+          description: Invalid email/password format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Email already exists.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /auth/verify-email:
+    get:
+      summary: Verify email via token
+      operationId: verifyEmail
+      parameters:
+        - name: token
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Verification succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VerifyResponse'
+        '400':
+          description: Invalid/expired/used token.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /auth/resend-verification:
+    post:
+      summary: Resend verification email for unverified account
+      operationId: resendVerification
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResendRequest'
+      responses:
+        '202':
+          description: Resend accepted.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResendResponse'
+        '400':
+          description: Account already verified or invalid request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /protected/resource:
+    get:
+      summary: Example protected endpoint requiring verified account
+      operationId: getProtectedResource
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Access granted.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: access granted
+        '401':
+          description: Missing/invalid auth.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Unverified account.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    RegisterRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          minLength: 8
+    RegisterResponse:
+      type: object
+      required: [userId, status, message]
+      properties:
+        userId:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum: [UNVERIFIED]
+        message:
+          type: string
+    VerifyResponse:
+      type: object
+      required: [status, message]
+      properties:
+        status:
+          type: string
+          enum: [VERIFIED]
+        message:
+          type: string
+    ResendRequest:
+      type: object
+      required: [email]
+      properties:
+        email:
+          type: string
+          format: email
+    ResendResponse:
+      type: object
+      required: [status, message]
+      properties:
+        status:
+          type: string
+          enum: [RESENT]
+        message:
+          type: string
+    ErrorResponse:
+      type: object
+      required: [code, message]
+      properties:
+        code:
+          type: string
+          example: EMAIL_UNVERIFIED
+        message:
+          type: string
+        action:
+          type: string
+          nullable: true
