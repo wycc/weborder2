@@ -13,4 +13,3 @@
   },
   "include": ["backend", "frontend", "tests", "vitest.config.ts", "playwright.config.ts"]
 }
-

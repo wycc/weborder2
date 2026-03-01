@@ -5,11 +5,18 @@
   "type": "module",
   "scripts": {
     "dev": "tsx backend/src/server.ts",
+    "dev:frontend": "vite --root frontend",
+    "dev:all": "concurrently --names backend,frontend \"npm:dev\" \"npm:dev:frontend\"",
+    "build:frontend": "cd frontend && vite build",
+    "build": "npm run build:frontend",
+    "start": "tsx backend/src/server.ts",
+    "build:serve": "npm run build && npm run start",
     "test": "vitest run",
     "e2e": "playwright test",
     "lint": "eslint . --ext .ts,.tsx"
   },
   "dependencies": {
+    "@fastify/static": "^8.0.4",
     "@node-rs/argon2": "^1.8.3",
     "fastify": "^5.0.0",
     "jsonwebtoken": "^9.0.2",
@@ -22,10 +29,12 @@
     "@types/node": "^22.13.10",
     "@typescript-eslint/eslint-plugin": "^8.25.0",
     "@typescript-eslint/parser": "^8.25.0",
+    "concurrently": "^9.1.2",
     "eslint": "^8.57.1",
     "eslint-config-prettier": "^10.1.1",
     "tsx": "^4.19.3",
     "typescript": "^5.8.2",
+    "vite": "^7.3.1",
     "vitest": "^3.0.9"
   }
 }
