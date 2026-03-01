@@ -3,208 +3,203 @@
 **Input**: Design documents from `/specs/001-user-registration-service/`
 **Prerequisites**: plan.md (required), spec.md (required for user stories), research.md, data-model.md, contracts/, quickstart.md
 
-**Tests**: Test tasks are MANDATORY. Every user story includes contract/integration/e2e or unit tests mapped to FR 與風險。
+**Tests**: Test tasks are MANDATORY. Every user story MUST include executable tests mapped to FR 與風險。
 
-**Organization**: Tasks are grouped by user story to enable independent implementation and testing of each story.
+**Organization**: Tasks are grouped by user story for independent delivery and verification.
 
 ## Format: `[ID] [P?] [Story] Description`
 
-- **[P]**: Can run in parallel (different files, no dependencies)
-- **[Story]**: Which user story this task belongs to (US1, US2, US3)
-- Each task includes exact file path
+- **[P]**: Can run in parallel (different files, no direct dependency)
+- **[Story]**: User story label, required in user-story phases (`[US1]`, `[US2]`, `[US3]`)
+- Every task line uses exact format: `- [x] T### ...` and includes concrete file path(s)
 
 ## Phase 1: Setup (Shared Infrastructure)
 
-**Purpose**: Project initialization and baseline tooling for TypeScript + Fastify + Playwright
+**Purpose**: baseline tooling and test runtime for backend/frontend + E2E.
 
-- [X] T001 建立後端與前端目錄骨架於 backend/src/, backend/tests/, frontend/src/, tests/e2e/
-- [X] T002 初始化 Node.js TypeScript 專案設定於 package.json 與 tsconfig.json
-- [X] T003 [P] 設定 ESLint/Prettier 規則於 .eslintrc.cjs 與 .prettierrc
-- [X] T004 [P] 設定 Vitest 與 Playwright 基礎設定於 vitest.config.ts 與 playwright.config.ts
-- [X] T005 [P] 建立環境變數範本與載入機制於 .env.example 與 backend/src/config/env.ts
+- [x] T001 對齊執行腳本（test/e2e/lint）於 package.json
+- [x] T002 [P] 設定 Playwright baseURL、trace、screenshot、video 策略於 playwright.config.ts
+- [x] T003 [P] 建立 E2E 環境變數範本（含驗證網址）於 .env.example
+- [x] T004 建立 E2E 共用測試輔助（啟動流程、測試資料清理、郵件 stub 讀取）於 tests/e2e/helpers/e2e-test-helpers.ts
 
 ---
 
 ## Phase 2: Foundational (Blocking Prerequisites)
 
-**Purpose**: Core infrastructure that MUST be complete before ANY user story can be implemented
+**Purpose**: core primitives required before implementing any story-specific tasks.
 
-**⚠️ CRITICAL**: No user story work can begin until this phase is complete
+**⚠️ CRITICAL**: No user story work begins before this phase is complete.
 
-- [X] T006 建立 Fastify 啟動與路由掛載入口於 backend/src/app.ts 與 backend/src/server.ts
-- [X] T007 [P] 建立資料庫連線與 repository 基礎介面於 backend/src/lib/db.ts 與 backend/src/repositories/base-repository.ts
-- [X] T008 [P] 建立共用錯誤格式與 HTTP error handler 於 backend/src/lib/errors.ts 與 backend/src/plugins/error-handler.ts
-- [X] T009 [P] 建立 JWT 驗簽與 auth middleware 基礎於 backend/src/lib/jwt.ts 與 backend/src/middleware/auth.ts
-- [X] T010 [P] 建立結構化稽核日誌元件（含敏感欄位遮罩）於 backend/src/lib/audit-logger.ts
-- [X] T011 建立使用者、驗證 token、稽核事件基礎 schema/model 於 backend/src/models/user-account.ts、backend/src/models/email-verification-token.ts、backend/src/models/registration-audit-event.ts
+- [x] T005 建立註冊/驗證測試資料工廠與共用 fixture 於 backend/tests/helpers.ts
+- [x] T006 [P] 對齊驗證 token 與狀態欄位模型規格於 backend/src/models/email-verification-token.ts
+- [x] T007 [P] 對齊帳號狀態與驗證時間欄位規格於 backend/src/models/user-account.ts
+- [x] T008 [P] 對齊稽核事件欄位與遮罩策略於 backend/src/models/registration-audit-event.ts
+- [x] T009 建立驗證與重發流程的共用錯誤碼映射於 backend/src/lib/errors.ts
 
-**Checkpoint**: Foundation ready - user story implementation can now begin in parallel
+**Checkpoint**: Foundation ready; user stories can proceed.
 
 ---
 
 ## Phase 3: User Story 1 - 建立帳號並完成驗證 (Priority: P1) 🎯 MVP
 
-**Goal**: 使用者可完成註冊、收到驗證連結並成功將帳號轉為 VERIFIED
+**Goal**: 完成「註冊 → 收到驗證連結 → 成功驗證」主流程。
 
-**Independent Test**: 提交註冊資料後可取得驗證信（stub），使用有效 token 驗證成功且帳號狀態更新。
+**Independent Test**: 執行註冊與驗證流程後，帳號狀態由 `UNVERIFIED` 轉為 `VERIFIED`。
 
 ### Tests for User Story 1 (MANDATORY) ✅
 
-- [X] T012 [P] [US1] 建立 `/auth/register` 契約測試於 backend/tests/contract/auth-register.contract.test.ts
-- [X] T013 [P] [US1] 建立 `/auth/verify-email` 契約測試於 backend/tests/contract/auth-verify-email.contract.test.ts
-- [X] T014 [P] [US1] 建立註冊與驗證整合測試於 backend/tests/integration/auth-registration-flow.integration.test.ts
-- [X] T015 [P] [US1] 建立「註冊→收信→驗證」E2E 測試於 tests/e2e/register-and-verify.e2e.spec.ts
+- [x] T010 [P] [US1] 更新 `/auth/register` 契約測試案例與回應欄位驗證於 backend/tests/contract/auth-register.contract.test.ts
+- [x] T011 [P] [US1] 更新 `/auth/verify-email` 契約測試（有效/過期/已使用 token）於 backend/tests/contract/auth-verify-email.contract.test.ts
+- [x] T012 [P] [US1] 更新註冊與驗證整合測試流程於 backend/tests/integration/auth-registration-flow.integration.test.ts
+- [x] T013 [US1] 解除 skip 並實作可執行「register-and-verify」E2E 流程於 tests/e2e/register-and-verify.e2e.spec.ts
 
 ### Implementation for User Story 1
 
-- [X] T016 [P] [US1] 實作註冊請求 zod schema 與 DTO 於 backend/src/api/schemas/register.schema.ts
-- [X] T017 [P] [US1] 實作驗證 token 查驗 schema 於 backend/src/api/schemas/verify-email.schema.ts
-- [X] T018 [US1] 實作密碼 Argon2 雜湊服務於 backend/src/services/password-hash.service.ts
-- [X] T019 [US1] 實作驗證 token 產生/標記已使用服務於 backend/src/services/email-verification-token.service.ts
-- [X] T020 [US1] 實作郵件寄送（含測試 stub）於 backend/src/services/email.service.ts
-- [X] T021 [US1] 實作註冊流程服務（建立 UNVERIFIED 帳號+寄送驗證信）於 backend/src/services/registration.service.ts
-- [X] T022 [US1] 實作驗證流程服務（有效性檢查+更新 VERIFIED）於 backend/src/services/verify-email.service.ts
-- [X] T023 [US1] 實作 `POST /auth/register` 與 `GET /auth/verify-email` 路由於 backend/src/api/routes/auth.routes.ts
-- [X] T024 [US1] 實作驗證結果頁（成功/失敗）於 frontend/src/pages/verify-email-result.tsx
+- [x] T014 [P] [US1] 對齊註冊輸入驗證規則與錯誤訊息於 backend/src/api/schemas/register.schema.ts
+- [x] T015 [P] [US1] 對齊驗證 token 查驗與 query schema 於 backend/src/api/schemas/verify-email.schema.ts
+- [x] T016 [US1] 對齊註冊服務（建立未驗證帳號 + 發送驗證信）於 backend/src/services/registration.service.ts
+- [x] T017 [US1] 對齊驗證服務（token 驗證 + 狀態轉移）於 backend/src/services/verify-email.service.ts
+- [x] T018 [US1] 對齊註冊/驗證路由回應格式與錯誤碼於 backend/src/api/routes/auth.routes.ts
+- [x] T019 [US1] 對齊驗證結果頁成功/失敗/重發導引文案於 frontend/src/pages/verify-email-result.tsx
 
-**Checkpoint**: User Story 1 fully functional and independently testable
+**Checkpoint**: US1 can be demonstrated as MVP.
 
 ---
 
 ## Phase 4: User Story 2 - 防止未驗證帳號直接使用服務 (Priority: P2)
 
-**Goal**: 未驗證帳號被拒絕存取受保護資源，並得到一致且可行動的提示
+**Goal**: 未驗證帳號存取受保護資源時被阻擋並收到一致提示。
 
-**Independent Test**: 未驗證帳號呼叫受保護 API 得到 403 + `EMAIL_UNVERIFIED`；驗證完成後可正常存取。
+**Independent Test**: 未驗證帳號對受保護資源回傳 `403 + EMAIL_UNVERIFIED`，已驗證帳號可通行。
 
 ### Tests for User Story 2 (MANDATORY) ✅
 
-- [X] T025 [P] [US2] 建立 `/protected/resource` 契約測試於 backend/tests/contract/protected-resource.contract.test.ts
-- [X] T026 [P] [US2] 建立驗證狀態授權整合測試於 backend/tests/integration/verified-access.integration.test.ts
-- [X] T027 [P] [US2] 建立未驗證阻擋與提示文案 E2E 測試於 tests/e2e/unverified-access-blocked.e2e.spec.ts
+- [x] T020 [P] [US2] 更新受保護資源契約測試（401/403/200）於 backend/tests/contract/protected-resource.contract.test.ts
+- [x] T021 [P] [US2] 更新驗證狀態授權整合測試（未驗證阻擋、已驗證放行）於 backend/tests/integration/verified-access.integration.test.ts
+- [x] T022 [US2] 解除 skip 並實作可執行「unverified-access-blocked」E2E 流程於 tests/e2e/unverified-access-blocked.e2e.spec.ts
 
 ### Implementation for User Story 2
 
-- [X] T028 [US2] 擴充 auth middleware 驗證 account status 並輸出一致錯誤碼於 backend/src/middleware/auth.ts
-- [X] T029 [US2] 實作受保護資源路由於 backend/src/api/routes/protected.routes.ts
-- [X] T030 [US2] 實作前端未驗證導引元件（含重發入口）於 frontend/src/components/unverified-notice.tsx
+- [x] T023 [US2] 對齊驗證狀態授權邏輯與錯誤碼輸出於 backend/src/middleware/auth.ts
+- [x] T024 [US2] 對齊受保護資源 API 回應與錯誤格式於 backend/src/api/routes/protected.routes.ts
+- [x] T025 [US2] 對齊未驗證提示元件與重發入口於 frontend/src/components/unverified-notice.tsx
 
-**Checkpoint**: User Stories 1 and 2 both work independently
+**Checkpoint**: US2 independently testable and shippable.
 
 ---
 
 ## Phase 5: User Story 3 - 密碼安全保存與重複註冊處理 (Priority: P3)
 
-**Goal**: 密碼不可逆保存且重複 email 註冊有一致回應，不建立重複帳號
+**Goal**: 密碼不可逆儲存，重複 email 不建立重複帳號且回應一致。
 
-**Independent Test**: 儲存層無明文密碼；同 email 重複註冊回傳一致 409 結果且資料筆數不增加。
+**Independent Test**: 密碼僅以雜湊儲存；重複註冊回傳一致錯誤並維持單一帳號。
 
 ### Tests for User Story 3 (MANDATORY) ✅
 
-- [X] T031 [P] [US3] 建立密碼雜湊單元測試於 backend/tests/unit/password-hash.service.unit.test.ts
-- [X] T032 [P] [US3] 建立重複註冊整合測試於 backend/tests/integration/duplicate-registration.integration.test.ts
-- [X] T033 [P] [US3] 建立重複註冊錯誤回應契約測試於 backend/tests/contract/auth-register-duplicate.contract.test.ts
+- [x] T026 [P] [US3] 更新密碼雜湊單元測試（Argon2id 驗證與明文排除）於 backend/tests/unit/password-hash.service.unit.test.ts
+- [x] T027 [P] [US3] 更新重複註冊整合測試（資料唯一性）於 backend/tests/integration/duplicate-registration.integration.test.ts
+- [x] T028 [P] [US3] 更新重複註冊契約測試（409 回應一致性）於 backend/tests/contract/auth-register-duplicate.contract.test.ts
 
 ### Implementation for User Story 3
 
-- [X] T034 [US3] 在註冊服務加入 email 唯一檢查與一致錯誤回應於 backend/src/services/registration.service.ts
-- [X] T035 [US3] 在 repository 層加入大小寫不敏感 email 查找與唯一保護於 backend/src/repositories/user-account.repository.ts
-- [X] T036 [US3] 強化註冊路由錯誤映射（400/409）於 backend/src/api/routes/auth.routes.ts
+- [x] T029 [US3] 對齊密碼雜湊參數與驗證邏輯於 backend/src/services/password-hash.service.ts
+- [x] T030 [US3] 對齊 email 唯一檢查與大小寫正規化查找於 backend/src/repositories/user-account.repository.ts
+- [x] T031 [US3] 對齊重複註冊錯誤映射（400/409）於 backend/src/api/routes/auth.routes.ts
 
-**Checkpoint**: All user stories independently functional
+**Checkpoint**: US3 independently testable and shippable.
 
 ---
 
 ## Phase 6: Polish & Cross-Cutting Concerns
 
-**Purpose**: Improvements that affect multiple user stories
+**Purpose**: hardening, documentation, and CI-quality evidence across stories.
 
-- [X] T037 [P] 補齊 API 文件與範例回應於 specs/001-user-registration-service/contracts/openapi.yaml
-- [X] T038 整理稽核事件覆蓋（註冊/驗證成功/失敗/重發）於 backend/src/services/audit-event.service.ts
-- [X] T039 [P] 補齊重發驗證信 API 與流程（FR-008）測試於 backend/tests/integration/resend-verification.integration.test.ts
-- [X] T040 實作重發驗證信路由與服務於 backend/src/api/routes/auth.routes.ts 與 backend/src/services/resend-verification.service.ts
-- [X] T041 [P] 新增效能驗證測試（register/verify p95 < 2s）於 backend/tests/integration/performance-registration.integration.test.ts
-- [X] T042 執行 quickstart 驗證指令並紀錄結果於 specs/001-user-registration-service/quickstart.md
+- [x] T032 [P] 對齊 OpenAPI 與實際回應範例於 specs/001-user-registration-service/contracts/openapi.yaml
+- [x] T033 [P] 補齊重發驗證信整合測試（FR-008）於 backend/tests/integration/resend-verification.integration.test.ts
+- [x] T034 對齊重發驗證信流程實作與錯誤碼於 backend/src/services/resend-verification.service.ts
+- [x] T035 [P] 補齊註冊/驗證流程效能驗證（p95 < 2s）於 backend/tests/integration/performance-registration.integration.test.ts
+- [x] T036 [P] 補齊 E2E 執行說明與驗收步驟（含 trace/screenshot 產物）於 specs/001-user-registration-service/quickstart.md
+- [x] T037 執行格式檢查與任務編號稽核（T001~T037）於 specs/001-user-registration-service/tasks.md
 
 ---
 
-## Dependencies & Execution Order
+## Dependencies
 
 ### Phase Dependencies
 
-- **Phase 1 (Setup)**: no dependencies
-- **Phase 2 (Foundational)**: depends on Phase 1; blocks all user stories
-- **Phase 3 (US1)**: depends on Phase 2
-- **Phase 4 (US2)**: depends on Phase 2 and reuses US1 auth/token baseline
-- **Phase 5 (US3)**: depends on Phase 2 and partially touches US1 registration flow
-- **Phase 6 (Polish)**: depends on target user stories completed
+- Phase 1 → no dependency
+- Phase 2 → depends on Phase 1 completion
+- Phase 3/4/5 (US1/US2/US3) → all depend on Phase 2 completion
+- Phase 6 → depends on at least one completed story; final closeout after US1~US3
 
 ### User Story Dependencies
 
-- **US1 (P1)**: first deliverable, MVP baseline
-- **US2 (P2)**: independent goal but depends on foundational auth/user status primitives
-- **US3 (P3)**: independent goal but extends register flow implemented in US1
+- **US1 (P1)**: first deliverable and MVP baseline
+- **US2 (P2)**: depends on foundational auth primitives; functionally independent from US3
+- **US3 (P3)**: depends on foundational data/security primitives; functionally independent from US2
 
-### Within Each User Story
+### Within-story Ordering Rules
 
-- Tests first (contract/integration/e2e/unit)
-- Schema/model before service
-- Service before route/UI integration
-- Complete story and run mapped tests before moving forward
-
-### Parallel Opportunities
-
-- Setup: T003, T004, T005 can run in parallel
-- Foundational: T007, T008, T009, T010 parallelizable after T006
-- US1: T012~T015 and T016~T017 parallelizable
-- US2: T025~T027 parallelizable
-- US3: T031~T033 parallelizable
-- Polish: T037, T039, T041 can run in parallel
+- Test tasks first → implementation tasks second
+- Schema/model alignment before service updates
+- Service updates before route/UI updates
 
 ---
 
-## Parallel Example: User Story 1
+## Parallel execution examples
+
+### Example A: US1 tests in parallel
 
 ```bash
-# Tests in parallel
-Task: "T012 [US1] backend/tests/contract/auth-register.contract.test.ts"
-Task: "T013 [US1] backend/tests/contract/auth-verify-email.contract.test.ts"
-Task: "T014 [US1] backend/tests/integration/auth-registration-flow.integration.test.ts"
+Task: "T010 [US1] backend/tests/contract/auth-register.contract.test.ts"
+Task: "T011 [US1] backend/tests/contract/auth-verify-email.contract.test.ts"
+Task: "T012 [US1] backend/tests/integration/auth-registration-flow.integration.test.ts"
+```
 
-# Schemas in parallel
-Task: "T016 [US1] backend/src/api/schemas/register.schema.ts"
-Task: "T017 [US1] backend/src/api/schemas/verify-email.schema.ts"
+### Example B: Foundational model alignment in parallel
+
+```bash
+Task: "T006 backend/src/models/email-verification-token.ts"
+Task: "T007 backend/src/models/user-account.ts"
+Task: "T008 backend/src/models/registration-audit-event.ts"
+```
+
+### Example C: Cross-cutting validation in parallel
+
+```bash
+Task: "T032 specs/001-user-registration-service/contracts/openapi.yaml"
+Task: "T035 backend/tests/integration/performance-registration.integration.test.ts"
+Task: "T036 specs/001-user-registration-service/quickstart.md"
 ```
 
 ---
 
-## Implementation Strategy
+## Implementation strategy
 
-### MVP First (User Story 1 Only)
+### MVP first (US1 only)
 
-1. Complete Phase 1 and Phase 2
-2. Complete Phase 3 (US1)
-3. Validate independent test for US1
-4. Demo/deploy MVP
+1. Complete Phase 1 and Phase 2.
+2. Complete US1 test tasks (`T010`~`T013`) and then US1 implementation tasks (`T014`~`T019`).
+3. Validate only US1 acceptance flow (register → verify).
+4. Freeze MVP baseline before moving to US2/US3.
 
-### Incremental Delivery
+### Incremental delivery
 
-1. Setup + Foundational
-2. Deliver US1 and validate
-3. Deliver US2 and validate
-4. Deliver US3 and validate
-5. Run Polish phase and full quality gate (`npm test && npm run lint`)
+1. Setup + Foundational complete.
+2. Deliver US1 (MVP) and validate independently.
+3. Deliver US2 and validate independently.
+4. Deliver US3 and validate independently.
+5. Execute Phase 6 for contract/perf/docs/format closure.
 
-### Parallel Team Strategy
+### Dependency-ordered execution intent
 
-1. Team completes Setup + Foundational
-2. Dev A focuses US1, Dev B US2, Dev C US3 (after Phase 2)
-3. Merge by story checkpoints with contract + integration + e2e evidence
+- Task IDs are ordered to follow executable dependency flow: Setup (`T001`~`T004`) → Foundation (`T005`~`T009`) → US1 (`T010`~`T019`) → US2 (`T020`~`T025`) → US3 (`T026`~`T031`) → Polish (`T032`~`T037`).
 
 ---
 
-## Notes
+## Format validation
 
-- [P] tasks are intentionally separated by file to reduce merge conflicts
-- Story labels [US1]/[US2]/[US3] provide requirement traceability
-- All tasks follow required checklist format: `- [ ] Txxx [P?] [US?] description with file path`
+- Checklist format rule: every actionable task line is `- [x] T### ...`.
+- `[P]` is used only on tasks explicitly parallelizable by file/dependency separation.
+- Every user-story phase task contains `[US1]` / `[US2]` / `[US3]`.
+- Every task description includes explicit file path(s).

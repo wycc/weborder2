@@ -34,6 +34,25 @@ npm test && npm run lint
 2. 未驗證帳號存取受保護頁面被阻擋並看到一致訊息。
 3. 使用過期/已使用連結，頁面顯示可重發驗證信引導。
 
+## Run E2E
+```bash
+npm run e2e
+```
+
+## E2E artifacts (trace/screenshot/video)
+- 失敗測試會保留 screenshot 與 video（依 `playwright.config.ts`）。
+- 若發生 retry，會保留 trace（`on-first-retry`）。
+- 使用以下命令檢視 trace：
+
+```bash
+npx playwright show-trace <trace.zip>
+```
+
+## E2E acceptance checklist
+- `register-and-verify` 與 `unverified-access-blocked` 兩個案例可執行。
+- 失敗時可於產物中取得可重現資訊（trace/screenshot/video）。
+- 驗證流程錯誤時，回應保持一致錯誤格式與導引資訊。
+
 ## Performance validation
 - 在測試環境記錄 `POST /auth/register` 與 `GET /auth/verify-email` 延遲。
 - 驗收門檻：有效情境 p95 < 2 秒。
@@ -41,4 +60,3 @@ npm test && npm run lint
 ## Observability checklist
 - 稽核事件至少包含：eventType、occurredAt、result、reasonCode、emailMasked。
 - 日誌不得含明文 password、token。
-
